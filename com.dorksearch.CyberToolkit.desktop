@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Cyber Toolkit
+Comment=Cybersecurity and OSINT research toolkit
+Exec=cybertoolkit
+Icon=cybertoolkit
+Type=Application
+Categories=Utility;Security;

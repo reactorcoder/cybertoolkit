@@ -1,0 +1,12 @@
+using Gtk;
+using WebKit;
+
+int main (string[] args) {
+    Gtk.init (ref args);
+    var window = new Gtk.Window ();
+    window.set_title ("WiFi Map (authorized networks only)"); window.set_default_size (1000, 700);
+    var view = new WebView ();
+    string html = """
+<!doctype html><html><head><meta name='viewport' content='width=device-width,initial-scale=1'><link rel='stylesheet' href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css'><style>html,body,#map{height:100%;margin:0}#search{position:absolute;z-index:1000;top:10px;left:50px;width:280px;padding:9px;border:1px solid #888;border-radius:4px;box-shadow:0 1px 4px #777}</style></head><body><input id='search' placeholder='Search city or location, then press Enter'><div id='map'></div><script src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'></script><script>const m=L.map('map',{zoomControl:true,minZoom:3,maxZoom:19}).setView([45.815,15.98],17);const search=document.getElementById('search');search.addEventListener('keydown',async e=>{if(e.key!=='Enter')return;let q=search.value.trim();if(!q)return;try{let a=await fetch('https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q='+encodeURIComponent(q),{headers:{'Accept-Language':'en'}}).then(r=>r.json());if(!a.length){search.value='Location not found';return}m.setView([+a[0].lat,+a[0].lon],19);search.value=a[0].display_name}catch(x){search.value='Search failed'}});L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap',maxZoom:19,updateWhenIdle:true,keepBuffer:1}).addTo(m);const g=L.layerGroup().addTo(m),seen=new Set();async function load(a,b){let k=(Math.floor(a*4)/4).toFixed(2)+'_'+(Math.floor(b*4)/4).toFixed(2);if(seen.has(k))return;seen.add(k);try{let d=await fetch('https://dorksearch.pro/wifi-data/tiles/'+k+'.json').then(x=>x.json());d.forEach(n=>{if(typeof n.lat!='number'||typeof n.lon!='number')return;let p=L.marker([n.lat,n.lon]);p.bindPopup('<b>'+String(n.essid||'hidden').replace(/[<>]/g,'')+'</b><br>'+String(n.comment||'').replace(/[<>]/g,'')+'<br>Key: '+String(n.key||'').replace(/[<>]/g,'')+'<br><small>---</small>');p.addTo(g)})}catch(e){}}function refresh(){let b=m.getBounds();for(let a=Math.floor(b.getSouth()*4)/4;a<=b.getNorth();a+=.25)for(let c=Math.floor(b.getWest()*4)/4;c<=b.getEast();c+=.25)load(a,c)}m.on('moveend',refresh);refresh();</script></body></html>""";
+    view.load_html (html, "https://dorksearch.pro/"); window.add (view); window.show_all (); Gtk.main (); return 0;
+}

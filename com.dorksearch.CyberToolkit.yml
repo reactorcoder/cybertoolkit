@@ -1,0 +1,24 @@
+app-id: com.dorksearch.CyberToolkit
+runtime: org.gnome.Platform
+runtime-version: '48'
+sdk: org.gnome.Sdk
+command: cybertoolkit
+finish-args:
+  - --share=network
+  - --share=ipc
+  - --socket=fallback-x11
+  - --socket=wayland
+  - --device=dri
+modules:
+  - name: cybertoolkit
+    buildsystem: simple
+    build-commands:
+      - valac --pkg gtk4 --pkg gio-2.0 app4.vala -o cybertoolkit
+      - install -Dm755 cybertoolkit /app/bin/cybertoolkit
+      - install -Dm644 fingerprint.html /app/share/cybertoolkit/fingerprint.html
+      - install -Dm644 network_tests.html /app/share/cybertoolkit/network_tests.html
+      - install -Dm644 cybertoolkit.svg /app/share/icons/hicolor/scalable/apps/cybertoolkit.svg
+      - install -Dm644 com.dorksearch.CyberToolkit.desktop /app/share/applications/com.dorksearch.CyberToolkit.desktop
+    sources:
+      - type: dir
+        path: .
