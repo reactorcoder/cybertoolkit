@@ -8,8 +8,6 @@ Cyber Toolkit is a GTK4 desktop application for authorized security research, OS
 
 ![Cyber Toolkit screenshot](docs/screenshot.png)
 
-> Add the application screenshot at `docs/screenshot.png` before publishing the repository.
-
 ## Features
 
 - **Cyber Intel** — build Google dork queries for reconnaissance and bug bounty work.
